@@ -1,8 +1,7 @@
+// André Barbosa Coura Valverde
+
 import java.util.Scanner;
 
-/**
- * ArvoreFuncionario
- */
 public class ArvoreFuncionario {
 
     public Funcionario novo;
@@ -19,6 +18,7 @@ public class ArvoreFuncionario {
         Scanner scanner = new Scanner(System.in);
         int achou;
 
+        // A variavel do tipo da classe recebe um objeto por referência e recebe tudo dele
         this.novo = funcionario;
 
         if (raiz == null) {
@@ -50,44 +50,80 @@ public class ArvoreFuncionario {
         return true;
     }
 
-    public String pesquisarNo(int a) {
+    public String pesquisarNo(int valorPesquisa) {
         int altura = 0;
         aux = raiz;
 
         while (aux != null) {
-            if (a == aux.matricula) {
-                return "\nAltura encontrada do nó foi: " + altura + "\n--- Informação do nó achado ---"
+            // Se o valor pesquisado for achado, vai ser retornado a sua altura e sua
+            // informações relevantes
+            if (valorPesquisa == aux.matricula) {
+                return "\nAltura encontrada do nó foi: " + altura + "\n\n--- Informação do nó achado ---\n"
                         + aux.toString();
-            } else if (a < aux.matricula) {
+            } else if (valorPesquisa < aux.matricula) {
                 aux = aux.esquerda;
                 altura++;
-            } else if (a > aux.matricula) {
+            } else if (valorPesquisa > aux.matricula) {
                 aux = aux.direita;
                 altura++;
             }
         }
-        return "Não foi achado esse nó, tente novamente!";
+        return "\nNão foi achado esse nó, tente novamente!";
     }
 
-    public void excluirNo(int a) {
-        if (a == raiz.matricula) {
-            aux = raiz.esquerda;
+    public Funcionario excluirNo(Funcionario funcSelecionado, int valorExcluir) {
+        Funcionario aux1, aux2;
 
-            if (raiz.direita != null) {
-                raiz = raiz.direita.esquerda;
-                raiz.esquerda = aux;
+        if (valorExcluir == funcSelecionado.matricula) {
+            if (funcSelecionado.esquerda == funcSelecionado.direita) {
+                return null;
+            } else if (funcSelecionado.esquerda == null) {
+                return raiz.direita;
+            } else if (funcSelecionado.direita == null) {
+                return raiz.esquerda;
+            } else {
+                aux1 = funcSelecionado.direita;
+                aux2 = funcSelecionado.direita;
+
+                while (aux1.esquerda != null) {
+                    aux1 = aux1.esquerda;
+                }
+
+                aux1.esquerda = funcSelecionado.esquerda;
+
+                return aux2;
             }
-        } 
+        } else if (valorExcluir > funcSelecionado.matricula) {
+            funcSelecionado.direita = excluirNo(funcSelecionado.direita, valorExcluir);
+        } else {
+            funcSelecionado.esquerda = excluirNo(funcSelecionado.esquerda, valorExcluir);
+        }
+        return funcSelecionado;
     }
 
-    public void esvaziarArvore() {
-        raiz = null;
-        raiz.esquerda = null;
-        raiz.direita = null;
+    // Tira da jogada todas as referências da árvore
+    public Funcionario esvaziarArvore() {
+        Scanner scanner = new Scanner(System.in);
+
+        if (raiz == null) {
+            System.out.printf("\nÁrvore já está vazia, não tem o que fazer aqui, volte o menu!");
+            scanner.nextLine();
+        } else {
+            raiz = null;
+            System.out.println("\nÁrvore esvaziada, está completamente limpa!");
+            scanner.nextLine();
+        }
+
+        return raiz;
     }
 
     public void mostrarArvoreOrdem(Funcionario funcionario) {
-        if (funcionario != null) {
+        Scanner scanner = new Scanner(System.in);
+
+        if (raiz == null) {
+            System.out.printf("\nÁrvore está vazia, não tem o que fazer aqui, volte o menu!");
+            scanner.nextLine();
+        } else if (funcionario != null) {
             mostrarArvoreOrdem(funcionario.esquerda);
             System.out.printf(funcionario.toString());
             mostrarArvoreOrdem(funcionario.direita);
@@ -95,17 +131,27 @@ public class ArvoreFuncionario {
     }
 
     public void mostrarArvorePreOrdem(Funcionario funcionario) {
-        if (funcionario != null) {
+        Scanner scanner = new Scanner(System.in);
+
+        if (raiz == null) {
+            System.out.printf("\nÁrvore está vazia, não tem o que fazer aqui, volte o menu!");
+            scanner.nextLine();
+        } else if (funcionario != null) {
             System.out.printf(funcionario.toString());
-            mostrarArvoreOrdem(funcionario.esquerda);
-            mostrarArvoreOrdem(funcionario.direita);
+            mostrarArvorePreOrdem(funcionario.esquerda);
+            mostrarArvorePreOrdem(funcionario.direita);
         }
     }
 
     public void mostrarArvorePosOrdem(Funcionario funcionario) {
-        if (funcionario != null) {
-            mostrarArvoreOrdem(funcionario.esquerda);
-            mostrarArvoreOrdem(funcionario.direita);
+        Scanner scanner = new Scanner(System.in);
+
+        if (raiz == null) {
+            System.out.printf("\nÁrvore está vazia, não tem o que fazer aqui, volte o menu!");
+            scanner.nextLine();
+        } else if (funcionario != null) {
+            mostrarArvorePosOrdem(funcionario.esquerda);
+            mostrarArvorePosOrdem(funcionario.direita);
             System.out.printf(funcionario.toString());
         }
     }
